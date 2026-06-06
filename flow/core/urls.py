@@ -7,10 +7,14 @@ from .views import (
     get_current_session, pause_session, resume_session, rate_session,
     update_daily_goal, clear_all_history, update_dream_goal,
     get_todos, create_todo, update_todo, delete_todo, reorder_todos,
+    login_view, register_view, logout_view,
 )
 
 urlpatterns = [
     path("", views.profession_choice, name="profession_choice"),
+    path("login/", login_view, name="login_view"),
+    path("register/", register_view, name="register_view"),
+    path("logout/", logout_view, name="logout_view"),
     path("home/", views.home, name="home"),
     path("session-hub/", session_hub, name="session_hub"),
     path("session-history/", SessionHistoryListView.as_view(), name="session_history"),

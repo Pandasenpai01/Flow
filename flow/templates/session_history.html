@@ -14,7 +14,10 @@
                 <h1>History & Analytics</h1>
                 <p>Welcome back, {{ user.username }}</p>
             </div>
-            <a href="{% url 'session_hub' %}" class="btn-back">&larr; Back to Hub</a>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="{% url 'session_hub' %}" class="btn-back">&larr; Back to Hub</a>
+                <a href="{% url 'logout_view' %}" class="btn-back" style="color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);">Sign Out</a>
+            </div>
         </div>
     </header>
 

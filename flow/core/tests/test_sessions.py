@@ -147,7 +147,7 @@ class TestSuiteCModelLogic:
 
     def test_todo_item_crud(self, auth_client, user):
         # Create
-        response = auth_client.post("/api/todos/", json.dumps({"text": "Buy milk"}), content_type="application/json")
+        response = auth_client.post("/api/todos/create/", json.dumps({"text": "Buy milk"}), content_type="application/json")
         assert response.status_code == 201
         todo_id = response.json()["id"]
         
@@ -160,11 +160,11 @@ class TestSuiteCModelLogic:
         assert not todos[0]["is_completed"]
         
         # Update
-        response = auth_client.patch(f"/api/todos/{todo_id}/", json.dumps({"is_completed": True, "text": "Buy almond milk"}), content_type="application/json")
+        response = auth_client.patch(f"/api/todos/{todo_id}/update/", json.dumps({"is_completed": True, "text": "Buy almond milk"}), content_type="application/json")
         assert response.status_code == 200
         
         # Reorder
-        todo2_response = auth_client.post("/api/todos/", json.dumps({"text": "Buy eggs"}), content_type="application/json")
+        todo2_response = auth_client.post("/api/todos/create/", json.dumps({"text": "Buy eggs"}), content_type="application/json")
         todo2_id = todo2_response.json()["id"]
         
         response = auth_client.put("/api/todos/reorder/", json.dumps({

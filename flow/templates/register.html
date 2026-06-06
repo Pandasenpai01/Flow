@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create account – Flow</title>
+  <meta name="description" content="Create your Flow account to start tracking your focus sessions and goals." />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050505;
+      --border: rgba(255, 255, 255, 0.14);
+      --border-strong: rgba(255, 255, 255, 0.28);
+      --accent: rgba(255, 255, 255, 0.9);
+      --error: #ff6b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: #fff;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+        Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      overflow-x: hidden;
+    }
+
+    .spotlight {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.95;
+      background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 40%),
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.06) 26%,
+          rgba(0, 0, 0, 0) 60%);
+      mix-blend-mode: screen;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 28px 22px 0;
+    }
+
+    .brand {
+      width: min(980px, 92vw);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.55);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 22px 56px;
+    }
+
+    .card {
+      width: min(420px, 92vw);
+      padding: 40px 36px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-transform: lowercase;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .error-msg {
+      background: rgba(255, 107, 107, 0.12);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: var(--error);
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 6px;
+      text-transform: lowercase;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 120ms ease, background 120ms ease;
+      font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: var(--border-strong);
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      margin-top: 28px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #050505;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 120ms ease, transform 120ms ease;
+      font-family: inherit;
+      letter-spacing: 0.2px;
+    }
+
+    .btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .alt-link {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .alt-link a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 120ms ease;
+    }
+
+    .alt-link a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="spotlight" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a class="logo" href="{% url 'profession_choice' %}" aria-label="Flow">
+          <span class="dot" aria-hidden="true"></span>
+          <span>FLOW</span>
+        </a>
+      </div>
+    </header>
+
+    <main role="main" aria-label="Create account">
+      <div class="card">
+        <h1>create account</h1>
+        <p class="subtitle">start tracking your focus</p>
+
+        {% if error %}
+        <div class="error-msg" role="alert" id="register-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="{% url 'register_view' %}" id="register-form">
+          {% csrf_token %}
+          <div class="field">
+            <label for="id_username">username</label>
+            <input type="text" name="username" id="id_username" placeholder="choose a username" autocomplete="username" autofocus required />
+          </div>
+          <div class="field">
+            <label for="id_password">password</label>
+            <input type="password" name="password" id="id_password" placeholder="create a password" autocomplete="new-password" required />
+          </div>
+          <div class="field">
+            <label for="id_password_confirm">confirm password</label>
+            <input type="password" name="password_confirm" id="id_password_confirm" placeholder="repeat your password" autocomplete="new-password" required />
+          </div>
+          <button type="submit" class="btn" id="register-submit">Create account →</button>
+        </form>
+
+        <p class="alt-link">already have an account? <a href="{% url 'login_view' %}">sign in</a></p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      function setSpotlight(x, y) {
+        root.style.setProperty("--mx", `${x}px`);
+        root.style.setProperty("--my", `${y}px`);
+      }
+      window.addEventListener(
+        "pointermove",
+        (e) => setSpotlight(e.clientX, e.clientY),
+        { passive: true },
+      );
+      setSpotlight(
+        Math.round(window.innerWidth * 0.5),
+        Math.round(window.innerHeight * 0.42),
+      );
+    })();
+  </script>
+</body>
+
+</html>

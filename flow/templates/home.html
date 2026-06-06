@@ -1156,13 +1156,6 @@
 
     <div class="sidebar-divider" style="margin-bottom: 1.5rem;"></div>
 
-    {% if dream_goal %}
-    <div class="goal-pill" style="margin-bottom: 1.5rem; width: 100%; justify-content: center; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);">
-      <span class="goal-pill-text">Targeting: <strong>{{ dream_goal }}</strong></span>
-      <button id="btn-edit-goal" title="Edit Goal">✎</button>
-    </div>
-    {% endif %}
-
     <!-- Navigation -->
     <nav class="sidebar-nav" aria-label="Primary navigation">
       <a href="{% url 'home' %}" class="active" id="nav-home">
@@ -1170,6 +1163,9 @@
       </a>
       <a href="{% url 'session_hub' %}" id="nav-session">
         <span class="nav-icon">◎</span> Session Hub
+      </a>
+      <a href="{% url 'logout_view' %}" id="nav-logout" style="color: #fca5a5;">
+        <span class="nav-icon">⎋</span> Sign Out
       </a>
     </nav>
 
@@ -1199,6 +1195,13 @@
        RIGHT SIDEBAR
   ═════════════════════════════════════════════════ -->
   <aside id="right-sidebar" aria-label="Dashboard right sidebar">
+
+    {% if dream_goal %}
+    <div class="goal-pill" style="margin-bottom: 1.5rem; width: 100%; justify-content: center; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);">
+      <span class="goal-pill-text">Targeting: <strong>{{ dream_goal }}</strong></span>
+      <button id="btn-edit-goal" title="Edit Goal">✎</button>
+    </div>
+    {% endif %}
 
     <!-- ── Motivation section ── -->
     <div>

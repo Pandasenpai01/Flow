@@ -10,28 +10,44 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Optional: read secrets from environment / .env (recommended for MySQL credentials)
+# Read secrets from environment / .env
 try:
-    from decouple import config
+    from decouple import config, Csv
 except Exception:  # pragma: no cover
     config = None
+    Csv = None
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u+xmg$qfe-k!jtkh4f0=g0+^f=#$^#4#k^^efr9&9bv&+m^l%='
+# SECRET_KEY: read from environment; falls back to insecure dev key ONLY when
+# decouple is unavailable (e.g. bare-bones local run without .env).
+SECRET_KEY = (
+    config("SECRET_KEY", default="")
+    if config
+    else os.environ.get("SECRET_KEY", "")
+) or "django-insecure-local-dev-only-key"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG: always False in production; cast from env string to bool.
+DEBUG = (
+    config("DEBUG", default=False, cast=bool)
+    if config
+    else os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
+)
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS: comma-separated list in env, empty list default.
+if config and Csv:
+    ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv())
+else:
+    _hosts_raw = os.environ.get("ALLOWED_HOSTS", "")
+    ALLOWED_HOSTS = [h.strip() for h in _hosts_raw.split(",") if h.strip()]
 
 
 # Application definition
@@ -122,6 +138,15 @@ else:
         }
     }
 
+import sys
+if "test" in sys.argv or "pytest" in sys.modules:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db_test.sqlite3",
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -160,10 +185,24 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Third-party APIs
-NEWSAPI_KEY = config("NEWSAPI_KEY", default="") if config else ""
+NEWSAPI_KEY = (
+    config("NEWSAPI_KEY", default="")
+    if config
+    else os.environ.get("NEWSAPI_KEY", "")
+)
 
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Whitenoise for serving static files on Vercel
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Authentication
+LOGIN_URL = "/login/"
+
+# ---------------------------------------------------------------------------
+# Security & Session hardening (production)
+# ---------------------------------------------------------------------------
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG

@@ -5,14 +5,17 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 from django.db.models import Sum, Avg, Max
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 
+# pyrefly: ignore [missing-import]
 from .models import DailyStatistic, Session, TodoItem, UserProfile
 
 
@@ -43,7 +46,9 @@ _MOTIVATIONAL_QUOTES = [
 
 def _fetch_news_for_goal(query):
     """Fetch real-time news headlines based on the query."""
-    api_key = "b064798bc1664334879fc4c5e0ecd4b2"
+    api_key = settings.NEWSAPI_KEY
+    if not api_key:
+        return None
 
     url = f"https://newsapi.org/v2/everything?q={query}&sortBy=publishedAt&pageSize=5&language=en&apiKey={api_key}"
     try:
@@ -128,16 +133,66 @@ def update_dream_goal(request):
 
 
 def profession_choice(request):
-    from django.contrib.auth.models import User
-    from django.contrib.auth import login
-    if not request.user.is_authenticated:
-        user = User.objects.first()
-        if not user:
-            user = User.objects.create_user(username='flow_user', password='password')
-        login(request, user)
-    return render(request, "profession_choice.html")
+    """Landing page — redirects authenticated users to home, others to login."""
+    if request.user.is_authenticated:
+        return redirect("home")
+    return redirect("login_view")
 
 
+def login_view(request):
+    """Handle user login via GET (render form) and POST (authenticate)."""
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    error = None
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+        if username and password:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("home")
+            else:
+                error = "Invalid username or password."
+        else:
+            error = "Please enter both username and password."
+
+    return render(request, "login.html", {"error": error})
+
+
+def register_view(request):
+    """Handle user registration via GET (render form) and POST (create account)."""
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    error = None
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+        password_confirm = request.POST.get("password_confirm", "")
+
+        if not username or not password:
+            error = "Please fill in all fields."
+        elif password != password_confirm:
+            error = "Passwords do not match."
+        elif User.objects.filter(username=username).exists():
+            error = "That username is already taken."
+        else:
+            user = User.objects.create_user(username=username, password=password)
+            login(request, user)
+            return redirect("home")
+
+    return render(request, "register.html", {"error": error})
+
+
+def logout_view(request):
+    """Clear the session and redirect to login. Safe for anonymous users."""
+    logout(request)
+    return redirect("login_view")
+
+
+@login_required
 @require_http_methods(["GET"])
 def session_hub(request):
     return render(

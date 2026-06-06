@@ -17,7 +17,10 @@
                 <h1>Session Hub</h1>
                 <p>Welcome back, {{ user.username }}</p>
             </div>
-            <a href="{% url 'home' %}" class="nav-link">← Home</a>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="{% url 'home' %}" class="nav-link">← Home</a>
+                <a href="{% url 'logout_view' %}" class="nav-link" style="color: #fca5a5;">Sign Out</a>
+            </div>
         </div>
     </header>
 
