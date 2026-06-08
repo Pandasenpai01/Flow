@@ -43,11 +43,21 @@ DEBUG = (
 )
 
 # ALLOWED_HOSTS: comma-separated list in env, empty list default.
+_ALLOWED_HOSTS_FALLBACK = [
+    "localhost",
+    "127.0.0.1",
+    ".vercel.app",
+]
+
 if config and Csv:
-    ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv())
+    _hosts = config("ALLOWED_HOSTS", default="", cast=Csv())
+    ALLOWED_HOSTS = _hosts if _hosts else _ALLOWED_HOSTS_FALLBACK
 else:
     _hosts_raw = os.environ.get("ALLOWED_HOSTS", "")
-    ALLOWED_HOSTS = [h.strip() for h in _hosts_raw.split(",") if h.strip()]
+    ALLOWED_HOSTS = (
+        [h.strip() for h in _hosts_raw.split(",") if h.strip()]
+        or _ALLOWED_HOSTS_FALLBACK
+    )
 
 
 # Application definition
@@ -195,7 +205,7 @@ NEWSAPI_KEY = (
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Whitenoise for serving static files on Vercel
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # Authentication
 LOGIN_URL = "/login/"
