@@ -7,9 +7,264 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Hub - Flow</title>
     <link rel="stylesheet" href="{% static 'css/session_hub.css' %}">
+    <style>
+        /* ── Sidebar Styles ──────────────────────────────── */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: #161d19;
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            gap: 2rem;
+            transform: translateX(0);
+            transition: width 0.3s ease, padding 0.3s ease, transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        #sidebar.collapsed { width: 70px; padding: 2rem 0.5rem; }
+
+        /* Toggle button inside sidebar */
+        .sidebar-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.40);
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+        }
+        .sidebar-toggle-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.80);
+        }
+        .sidebar-toggle-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #sidebar.collapsed .sidebar-toggle-btn svg {
+            transform: rotate(180deg);
+        }
+
+        /* Hide sidebar text when collapsed */
+        .sidebar-text {
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+        #sidebar.collapsed .sidebar-text {
+            opacity: 0;
+            width: 0;
+            pointer-events: none;
+        }
+
+        /* Center nav items when collapsed */
+        .sidebar-nav a {
+            justify-content: flex-start;
+        }
+        #sidebar.collapsed .sidebar-nav {
+            align-items: center;
+        }
+        #sidebar.collapsed .sidebar-nav a {
+            justify-content: center;
+            padding: 0.75rem;
+            width: 100%;
+        }
+        #sidebar.collapsed .sidebar-nav .nav-icon {
+            margin: 0;
+        }
+
+        /* Logo and brand adjustments */
+        .sidebar-brand {
+            justify-content: flex-start;
+        }
+        #sidebar.collapsed .sidebar-brand {
+            display: none;
+        }
+
+        /* User info adjustments */
+        .user-info-container {
+            justify-content: flex-start;
+        }
+        #sidebar.collapsed .user-info-container {
+            justify-content: center;
+        }
+        #sidebar.collapsed .user-info-container > div:last-child {
+            display: none;
+        }
+        #sidebar.collapsed .user-info-container > div:first-child {
+            margin: 0;
+        }
+        #sidebar.collapsed #nav-logout {
+            justify-content: center;
+        }
+
+        /* Sidebar logo / brand */
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-brand span {
+            font-size: 1.1rem; font-weight: 600;
+            letter-spacing: 0.06em;
+            color: rgba(255,255,255,1.0);
+        }
+
+        /* Divider */
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* Sidebar nav links */
+        .sidebar-nav { display: flex; flex-direction: column; gap: 0.4rem; height: 100%; }
+        .sidebar-nav .nav-top { display: flex; flex-direction: column; gap: 0.4rem; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.875rem; font-weight: 500;
+            color: rgba(255,255,255,0.50);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.80);
+        }
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.10);
+            color: rgba(255,255,255,1.0);
+        }
+        .sidebar-nav a .nav-icon { font-size: 1.5rem; width: 24px; text-align: center; color: rgba(255,255,255,0.50); }
+        .sidebar-nav a:hover .nav-icon { color: rgba(255,255,255,0.80); }
+        .sidebar-nav a.active .nav-icon { color: #10b981; }
+
+        /* Logout button */
+        #nav-logout {
+            color: rgba(255,255,255,0.40);
+        }
+        #nav-logout:hover {
+            color: rgba(255,255,255,0.70);
+        }
+        #nav-logout .nav-icon {
+            color: rgba(255,255,255,0.40);
+        }
+        #nav-logout:hover .nav-icon {
+            color: rgba(255,255,255,0.70);
+        }
+
+        /* Header layout */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Zen Mode: Hide sidebar */
+        body.zen-mode #sidebar {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- ═══════════════════════════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════════════════════════ -->
+    <aside id="sidebar" aria-label="Dashboard sidebar">
+
+        <!-- Header with logo and toggle -->
+        <div class="sidebar-header">
+            <!-- Brand mark -->
+            <div class="sidebar-brand">
+                <span class="sidebar-text">flow.</span>
+            </div>
+
+            <!-- Toggle button -->
+            <button class="sidebar-toggle-btn" aria-label="Toggle sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <div class="sidebar-divider" style="margin-bottom: 1.5rem;"></div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav" aria-label="Primary navigation">
+            <div class="nav-top">
+                <a href="{% url 'home' %}" id="nav-home">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span> <span class="sidebar-text">Dashboard</span>
+                </a>
+                <a href="{% url 'session_hub' %}" id="nav-session">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </span> <span class="sidebar-text">Session Hub</span>
+                </a>
+            </div>
+
+            <div class="sidebar-divider" style="margin: 1rem 0;"></div>
+            
+            <!-- Bottom section: User info and Sign Out -->
+            <div style="margin-top: auto;">
+
+                <!-- User info -->
+                <div class="user-info-container" style="display:flex; align-items:center; justify-content:center; gap:0.65rem; padding:0.25rem 0;">
+                    <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#00FF66,#00cc52);
+                                display:flex; align-items:center; justify-content:center;
+                                font-size:0.8rem; font-weight:700; color:#fff; flex-shrink:0;">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                    <div class="sidebar-text" style="flex:1; min-width:0;">
+                        <p style="font-size:0.82rem; font-weight:600; color:#d4d4d8; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            {{ user.username }}
+                        </p>
+                        <p style="font-size:0.7rem; color:#52525b; margin:0;">Free plan</p>
+                    </div>
+                </div>
+
+                <a href="{% url 'logout_view' %}" id="nav-logout" style="margin-top: 0.5rem;">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </span> <span class="sidebar-text">Sign Out</span>
+                </a>
+            </div>
+        </nav>
+
+    </aside>
+
     <!-- Page Header (hidden in Zen Mode) -->
     <header id="page-header">
         <div class="header-inner">
@@ -123,6 +378,19 @@
     </main>
 
     <script src="{% static 'js/session_hub.js' %}"></script>
+    <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

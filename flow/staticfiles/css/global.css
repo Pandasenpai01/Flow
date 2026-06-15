@@ -1,0 +1,530 @@
+/* ============================================================
+   GLOBAL.CSS — Shared styles for Flow application
+   Task 1: Global UI polish (backgrounds, typography, cursor)
+   Task 2: Left sidebar redesign (branding, nav, active state)
+   Task 3: Collapsible sidebar behavior
+   ============================================================ */
+
+/* ── Google Fonts ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ══════════════════════════════════════════════════════════
+   TASK 1 — GLOBAL UI POLISH & AESTHETICS
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Base reset ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #09090b;
+  color: #e4e4e7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Noise / grain texture overlay ────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Uppercase label spacing ──────────────────────────── */
+.label-upper,
+[data-label-upper] {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+/* ── Custom scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ── Custom Cursor ────────────────────────────────────── */
+#cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease-out, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+  mix-blend-mode: difference;
+  will-change: transform;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+#cursor-dot.cursor-hover {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Hide default cursor on body and interactive elements */
+body.cursor-active,
+body.cursor-active * {
+  cursor: none !important;
+}
+
+/* Restore cursor on inputs for usability */
+body.cursor-active input,
+body.cursor-active textarea,
+body.cursor-active select {
+  cursor: text !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   TASK 2 — LEFT SIDEBAR REDESIGN
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Sidebar Container ────────────────────────────────── */
+#sidebar-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 260px;
+  background: rgba(24, 24, 27, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.25rem;
+  z-index: 50;
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Sidebar Header (brand + toggle) ──────────────────── */
+.sl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  min-height: 36px;
+  flex-shrink: 0;
+}
+
+/* ── Branding: flow. ──────────────────────────────────── */
+.sl-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.25s ease, width 0.3s ease;
+}
+
+.sl-brand-text {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f4f4f5;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.sl-brand-dot {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #22c55e;
+  line-height: 1;
+}
+
+/* ── Toggle Button ────────────────────────────────────── */
+#sidebar-left-toggle {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  color: #a1a1aa;
+}
+
+#sidebar-left-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e4e4e7;
+}
+
+#sidebar-left-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Divider ──────────────────────────────────────────── */
+.sl-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  margin: 0.25rem 0 1.25rem 0;
+  flex-shrink: 0;
+}
+
+/* ── Section Label ────────────────────────────────────── */
+.sl-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(161, 161, 170, 0.55);
+  padding: 0 0.65rem;
+  margin-bottom: 0.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+/* ── Navigation Links ─────────────────────────────────── */
+.sl-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.sl-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #a1a1aa;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: background 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease,
+              padding 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sl-nav-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #d4d4d8;
+}
+
+/* ── Active State — Vibrant Green ─────────────────────── */
+.sl-nav-link.active {
+  background: rgba(34, 197, 94, 0.10);
+  color: #22c55e;
+  border-left-color: #22c55e;
+  border-radius: 0 10px 10px 0;
+  font-weight: 600;
+}
+
+.sl-nav-link.active .sl-nav-icon {
+  color: #22c55e;
+  filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.4));
+}
+
+/* ── Nav Icon ─────────────────────────────────────────── */
+.sl-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  transition: color 0.2s ease;
+}
+
+.sl-nav-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sl-nav-link:hover .sl-nav-icon {
+  color: #a1a1aa;
+}
+
+/* ── Nav Text Label ───────────────────────────────────── */
+.sl-nav-text {
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, width 0.3s ease;
+}
+
+/* ── Logout link special styling ──────────────────────── */
+.sl-nav-link.sl-logout {
+  color: rgba(252, 165, 165, 0.8);
+}
+.sl-nav-link.sl-logout:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #fca5a5;
+}
+.sl-nav-link.sl-logout .sl-nav-icon {
+  color: rgba(252, 165, 165, 0.6);
+}
+.sl-nav-link.sl-logout:hover .sl-nav-icon {
+  color: #fca5a5;
+}
+
+/* ── Spacer ───────────────────────────────────────────── */
+.sl-spacer {
+  flex: 1;
+}
+
+/* ── User Info (bottom of sidebar) ────────────────────── */
+.sl-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: padding 0.3s ease;
+}
+
+.sl-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+}
+
+.sl-user-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, width 0.3s ease;
+}
+
+.sl-user-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #d4d4d8;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sl-user-plan {
+  font-size: 0.65rem;
+  color: #52525b;
+  margin: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   TASK 3 — COLLAPSIBLE SIDEBAR BEHAVIOR
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Collapsed State ──────────────────────────────────── */
+#sidebar-left.collapsed {
+  width: 72px;
+  padding: 1.75rem 0.65rem;
+}
+
+/* Toggle arrow flips */
+#sidebar-left.collapsed #sidebar-left-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* Hide branding text */
+#sidebar-left.collapsed .sl-brand {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+/* Center the toggle button when collapsed */
+#sidebar-left.collapsed .sl-header {
+  justify-content: center;
+}
+
+/* Hide section labels */
+#sidebar-left.collapsed .sl-label {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Nav links: center icon, hide text */
+#sidebar-left.collapsed .sl-nav-link {
+  justify-content: center;
+  padding: 0.7rem;
+  border-left-color: transparent;
+  border-radius: 10px;
+  gap: 0;
+}
+
+#sidebar-left.collapsed .sl-nav-link.active {
+  border-left-color: transparent;
+  border-radius: 10px;
+  /* Use a subtle bottom/left indicator instead */
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.25);
+}
+
+#sidebar-left.collapsed .sl-nav-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Icon centering */
+#sidebar-left.collapsed .sl-nav-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* User info: hide text, center avatar */
+#sidebar-left.collapsed .sl-user {
+  justify-content: center;
+  padding: 0.6rem 0;
+}
+
+#sidebar-left.collapsed .sl-user-info {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Divider adjusts */
+#sidebar-left.collapsed .sl-divider {
+  margin: 0.25rem 0 0.75rem 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   MAIN CONTENT — Sidebar-aware layout
+   ══════════════════════════════════════════════════════════ */
+
+/* Content area shifts with sidebar */
+.sl-content-push {
+  margin-left: 260px;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#sidebar-left.collapsed ~ .sl-content-push,
+#sidebar-left.collapsed ~ * .sl-content-push,
+body.sidebar-collapsed .sl-content-push {
+  margin-left: 72px;
+}
+
+/* For templates using a shell wrapper */
+.sl-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   TOOLTIPS FOR COLLAPSED STATE
+   ══════════════════════════════════════════════════════════ */
+#sidebar-left.collapsed .sl-nav-link {
+  position: relative;
+}
+
+#sidebar-left.collapsed .sl-nav-link::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) scale(0.92);
+  background: rgba(24, 24, 27, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e4e4e7;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+#sidebar-left.collapsed .sl-nav-link:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile behavior
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #sidebar-left {
+    transform: translateX(-100%);
+    width: 260px !important;
+    z-index: 60;
+  }
+
+  #sidebar-left.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* No margin push on mobile */
+  .sl-content-push,
+  body.sidebar-collapsed .sl-content-push {
+    margin-left: 0 !important;
+  }
+
+  /* Hide collapsed state features on mobile */
+  #sidebar-left.collapsed .sl-brand { opacity: 1; width: auto; }
+  #sidebar-left.collapsed .sl-nav-text { opacity: 1; width: auto; }
+  #sidebar-left.collapsed .sl-user-info { opacity: 1; width: auto; }
+  #sidebar-left.collapsed .sl-label { opacity: 1; height: auto; margin-bottom: 0.6rem; }
+}
