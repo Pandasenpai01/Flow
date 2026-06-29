@@ -67,10 +67,16 @@
       const title = titleInput?.value?.trim() || "";
       if (!title) return;
 
-      // Get priority from radio buttons
-      const urgency = document.querySelector('input[name="urgency"]:checked')?.value || "Not Urgent";
-      const importance = document.querySelector('input[name="importance"]:checked')?.value || "Not Important";
-      const priority = `${urgency} & ${importance}`;
+      // Get priority and duration from modal inputs
+      const taskType = document.querySelector('input[name="priority"]:checked')?.value || "General";
+      const hrs = document.querySelector('input[name="duration_hours"]')?.value || "0";
+      const mins = document.querySelector('input[name="duration_minutes"]')?.value || "0";
+      
+      let durationStr = "";
+      if (parseInt(hrs) > 0 || parseInt(mins) > 0) {
+        durationStr = ` • ${hrs} Hr ${mins} Mins`;
+      }
+      const priority = `${taskType}${durationStr}`;
 
       const body = { text: title, priority: priority };
       const { resp, payload } = await apiFetch("/api/todos/create/", {
@@ -114,7 +120,7 @@
           </div>
           <div class="todo-content">
             <div class="todo-title ${todo.is_completed ? 'completed' : ''}">${escapeHtml(todo.text || '')}</div>
-            ${todo.priority ? `<span class="todo-priority">${escapeHtml(todo.priority)}</span>` : ''}
+            <div class="todo-subtitle">Task Type: ${todo.priority ? escapeHtml(todo.priority) : 'General'}</div>
           </div>
           <button class="todo-delete" data-todo-id="${todo.id}" type="button" aria-label="Delete todo">Delete</button>
         </div>

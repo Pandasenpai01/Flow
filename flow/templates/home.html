@@ -87,7 +87,11 @@
       overflow-y: auto;
       overflow-x: hidden;
     }
-    #sidebar.collapsed { width: 70px; padding: 2rem 0.5rem; }
+    #sidebar.collapsed { 
+      width: 70px; 
+      padding: 2rem 0.5rem; 
+      align-items: center;
+    }
 
     #right-sidebar {
       position: fixed;
@@ -275,8 +279,11 @@
       border: 1px solid rgba(255,255,255,0.05);
       color: rgba(255,255,255,0.40);
       cursor: pointer;
-      margin-bottom: 1rem;
+      margin: 0 auto 1rem auto;
       transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    #sidebar.collapsed .sidebar-toggle-btn {
+      margin: 0 auto 1rem auto;
     }
     .sidebar-toggle-btn:hover {
       background: rgba(255,255,255,0.05);
@@ -342,6 +349,7 @@
     }
     #sidebar.collapsed .user-info-container {
       justify-content: center;
+      align-items: center;
     }
     #sidebar.collapsed .user-info-container > div:last-child {
       display: none;
@@ -518,18 +526,21 @@
     #right-sidebar-toggle { right: 1.5rem; }
 
     #sidebar-toggle:hover, #right-sidebar-toggle:hover {
-      background: rgba(0, 255, 102, 0.2);
-      border-color: rgba(0, 255, 102, 0.4);
-      box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.15), 0 4px 24px rgba(0,0,0,0.4);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.1);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
     }
     #sidebar-toggle svg, #right-sidebar-toggle svg {
       width: 18px; height: 18px;
-      stroke: #00FF66;
+      stroke: rgba(255,255,255,0.40);
       fill: none;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), stroke 0.2s;
+    }
+    #sidebar-toggle:hover svg, #right-sidebar-toggle:hover svg {
+      stroke: rgba(255,255,255,0.80);
     }
     #sidebar-toggle.active svg { transform: rotate(180deg); }
     #right-sidebar-toggle.active svg { transform: rotate(-180deg); }
@@ -579,84 +590,83 @@
     /* Progress Card */
     .progress-card {
       width: 100%;
-      background: rgba(24, 24, 27, 0.7);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 24px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
       padding: 1.8rem 2.2rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
     .progress-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
       margin-bottom: 1.25rem;
     }
     .progress-title {
       font-size: 1.05rem;
       font-weight: 600;
-      color: #e4e4e7;
+      color: #f1f5f9;
       margin: 0;
     }
     .progress-stats {
       font-size: 0.8rem;
-      color: rgba(255,255,255,0.50);
+      color: #94a3b8;
       font-weight: 500;
     }
     .progress-track {
       width: 100%;
-      height: 28px;
-      background: rgba(0,0,0,0.4);
-      border-radius: 14px;
+      height: 36px;
+      background: #0f172a;
+      border-radius: 999px;
       overflow: hidden;
       position: relative;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
     }
     .progress-fill {
       height: 100%;
       width: 67%;
-      background: linear-gradient(90deg, #10b981, #34d399);
-      border-radius: 14px;
+      background: #10b981;
+      border-radius: 999px;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      padding-right: 12px;
+      justify-content: center;
+      padding: 0;
       font-size: 0.8rem;
-      font-weight: 700;
-      color: #064e3b;
-      box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+      font-weight: bold;
+      color: #ffffff;
+      transition: width 0.5s ease-in-out, background-color 0.3s ease;
     }
 
     /* Goals Card */
     .goals-card {
       width: 100%;
-      background: rgba(24, 24, 27, 0.7);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 24px;
-      padding: 2rem 2.2rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      backdrop-filter: blur(12px);
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      backdrop-filter: none;
     }
     .goals-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.8rem;
+      margin-bottom: 1rem;
     }
     .goals-title {
       font-size: 1.05rem;
       font-weight: 600;
-      color: #e4e4e7;
+      color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
       margin: 0;
     }
     .btn-add-goal {
-      background: #6366f1;
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      padding: 0.6rem 1.25rem;
+      background: #1e293b;
+      color: #10b981;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 16px;
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
@@ -664,34 +674,34 @@
       align-items: center;
       gap: 0.5rem;
       transition: background 0.2s, transform 0.2s;
-      box-shadow: 0 4px 12px rgba(99,102,241,0.3);
     }
     .btn-add-goal:hover {
-      background: #4f46e5;
-      transform: translateY(-1px);
+      background: #334155;
     }
     
     .todo-list {
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0;
     }
     .todo-item {
       display: flex;
       align-items: center;
       gap: 1.25rem;
-      padding: 1.25rem 1.5rem;
-      background: rgba(39, 39, 42, 0.4);
-      border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 16px;
-      transition: background 0.2s, border-color 0.2s;
+      padding: 16px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
     .todo-item:hover {
-      background: rgba(39, 39, 42, 0.7);
+      border-color: #475569;
+      background: #334155;
     }
     .todo-item.completed {
-      border-color: rgba(16, 185, 129, 0.2);
-      background: rgba(16, 185, 129, 0.08);
+      opacity: 0.7;
     }
     .todo-checkbox {
       width: 22px;
@@ -702,10 +712,10 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       flex-shrink: 0;
     }
-    .todo-item.completed .todo-checkbox {
+    .todo-checkbox.is-checked {
       background: #10b981;
       border-color: #10b981;
     }
@@ -720,42 +730,27 @@
       opacity: 0;
       transition: opacity 0.2s;
     }
-    .todo-item.completed .todo-checkbox svg {
+    .todo-checkbox.is-checked svg {
       opacity: 1;
     }
     .todo-content {
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 4px;
+      flex: 1;
     }
-    .todo-text {
-      font-size: 0.95rem;
+    .todo-title {
+      font-size: 16px;
       font-weight: 500;
-      color: #e4e4e7;
+      color: #f1f5f9;
     }
-    .todo-item.completed .todo-text {
-      color: rgba(255,255,255,0.50);
+    .todo-title.completed {
+      color: #94a3b8;
+      text-decoration: line-through;
     }
-    .todo-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .todo-badge {
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.40);
-      background: rgba(99, 102, 241, 0.15);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-    }
-    .todo-item.completed .todo-badge {
-      color: #6ee7b7;
-      background: rgba(16, 185, 129, 0.15);
-    }
-    .todo-time {
-      font-size: 0.75rem;
-      color: #71717a;
+    .todo-subtitle {
+      font-size: 13px;
+      color: #94a3b8;
     }
     
     .goal-pill {
@@ -1141,155 +1136,162 @@
     }
     .modal-content {
       position: relative;
-      background: rgba(24, 24, 27, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 2rem;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
       width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      max-width: 450px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 24px;
     }
     .modal-header h3 {
       margin: 0;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #e4e4e7;
+      font-size: 18px;
+      font-weight: 500;
+      color: #f1f5f9;
     }
     #todo-modal-close {
       background: transparent;
       border: none;
-      color: rgba(255,255,255,0.50);
-      font-size: 1.5rem;
+      color: #94a3b8;
+      font-size: 1.25rem;
       cursor: pointer;
-      padding: 0.25rem;
+      padding: 0;
       line-height: 1;
       transition: color 0.2s;
     }
     #todo-modal-close:hover {
-      color: #e4e4e7;
+      color: #ffffff;
     }
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 20px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .input-group label.field-label {
+      color: #94a3b8;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 0.05em;
     }
     #todo-title {
       width: 100%;
-      padding: 0.875rem 1rem;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      color: #e4e4e7;
-      font-size: 1rem;
+      padding: 10px 12px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #f1f5f9;
+      font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
     #todo-title:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      border-color: #10b981;
     }
     #todo-title::placeholder {
-      color: #71717a;
+      color: #475569;
     }
-    .priority-section {
+    
+    /* Task Type Pills */
+    .task-type-pills {
       display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    .priority-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+    .task-pill {
+      cursor: pointer;
     }
-    .priority-group > label:first-child {
+    .task-pill input[type="radio"] {
+      display: none;
+    }
+    .task-pill .pill-text {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      padding: 6px 14px;
+      border-radius: 999px;
       font-size: 0.85rem;
-      font-weight: 500;
-      color: rgba(255,255,255,0.50);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      transition: all 0.2s;
     }
-    .radio-label {
+    .task-pill input[type="radio"]:checked + .pill-text {
+      background: #10b981;
+      border: 1px solid #10b981;
+      color: #09090b;
+    }
+
+    /* Duration Selectors */
+    .duration-row {
+      display: flex;
+      gap: 12px;
+    }
+    .duration-input {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      padding: 0.5rem 0.75rem;
+      background: #0f172a;
+      border: 1px solid #334155;
       border-radius: 8px;
-      transition: background 0.2s;
+      padding: 8px 12px;
+      flex: 1;
     }
-    .radio-label:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-    .radio-label input[type="radio"] {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #52525b;
-      border-radius: 50%;
+    .duration-input input[type="number"] {
       background: transparent;
-      cursor: pointer;
-      position: relative;
-      transition: border-color 0.2s, background 0.2s;
+      border: none;
+      color: #f1f5f9;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
     }
-    .radio-label input[type="radio"]:checked {
-      border-color: #6366f1;
-      background: #6366f1;
+    .duration-input span {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-left: 8px;
     }
-    .radio-label input[type="radio"]:checked::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      width: 6px;
-      height: 6px;
-      background: white;
-      border-radius: 50%;
-    }
-    .radio-label span {
-      color: #e4e4e7;
-      font-size: 0.95rem;
-    }
+
     .modal-footer {
       display: flex;
       justify-content: flex-end;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
+      gap: 12px;
+      margin-top: 24px;
     }
     .modal-footer button[type="button"] {
-      padding: 0.75rem 1.5rem;
+      padding: 10px 16px;
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      color: rgba(255,255,255,0.50);
-      font-size: 0.9rem;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: color 0.2s;
     }
     .modal-footer button[type="button"]:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #e4e4e7;
+      color: #f1f5f9;
     }
     .modal-footer button[type="submit"] {
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      padding: 8px 24px;
+      background: #10b981;
       border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 0.9rem;
-      font-weight: 600;
+      border-radius: 999px;
+      color: #09090b;
+      font-size: 0.95rem;
+      font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      transition: background 0.2s;
     }
     .modal-footer button[type="submit"]:hover {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      transform: translateY(-1px);
+      background: #059669;
     }
 
     .todo-content {
@@ -1327,7 +1329,7 @@
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
     .todo-delete:hover {
       background: rgba(239, 68, 68, 0.1);
@@ -1453,9 +1455,9 @@
 
         <!-- User info -->
         <div class="user-info-container" style="display:flex; align-items:center; justify-content:center; gap:0.65rem; padding:0.25rem 0;">
-          <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#00FF66,#00cc52);
+          <div style="width:32px; height:32px; border-radius:50%; background:#334155;
                       display:flex; align-items:center; justify-content:center;
-                      font-size:0.8rem; font-weight:700; color:#fff; flex-shrink:0;">
+                      font-size:0.8rem; font-weight:700; color:#ffffff; flex-shrink:0;">
             {{ request.user.username|slice:":1"|upper }}
           </div>
           <div class="sidebar-text" style="flex:1; min-width:0;">
@@ -1545,7 +1547,7 @@
         {% if news_items is None %}
           <p class="rs-intel-unavailable">News currently unavailable</p>
         {% elif news_items %}
-          {% for item in news_items %}
+          {% for item in news_items|slice:":1" %}
             <div class="rs-intel-item">
               <div class="rs-intel-bullet"></div>
               <div class="rs-intel-content">
@@ -1555,9 +1557,6 @@
                 <span class="rs-intel-source">via {{ item.source }}</span>
               </div>
             </div>
-            {% if not forloop.last %}
-              <div class="rs-divider"></div>
-            {% endif %}
           {% endfor %}
         {% else %}
           <p class="rs-intel-unavailable">No recent intel available.</p>
@@ -1915,37 +1914,59 @@
   <div id="todo-modal-backdrop" hidden>
     <div class="modal-overlay" onclick="hideAddTodoModal()"></div>
     <div class="modal-content">
-      <form id="todo-form">
+      <form id="todo-form" method="POST">
+        {% csrf_token %}
         <div class="modal-header">
-          <h3>Add New Goal</h3>
+          <h3>Add Goal</h3>
           <button type="button" id="todo-modal-close" onclick="hideAddTodoModal()">✕</button>
         </div>
         <div class="modal-body">
-          <input type="text" id="todo-title" name="title" placeholder="Enter your goal..." required autocomplete="off">
+          <div class="input-group">
+            <label class="field-label">DESCRIPTION</label>
+            <input type="text" id="todo-title" name="title" placeholder="What do you want to accomplish?" required autocomplete="off">
+          </div>
           
-          <div class="priority-section">
-            <div class="priority-group">
-              <label>Urgency:</label>
-              <label class="radio-label">
-                <input type="radio" name="urgency" value="Urgent" required>
-                <span>Urgent</span>
+          <div class="input-group">
+            <label class="field-label">TASK TYPE</label>
+            <div class="task-type-pills">
+              <label class="task-pill">
+                <input type="radio" name="priority" value="Deep Work" required>
+                <span class="pill-text">Deep Work</span>
               </label>
-              <label class="radio-label">
-                <input type="radio" name="urgency" value="Not Urgent" required>
-                <span>Not Urgent</span>
+              <label class="task-pill">
+                <input type="radio" name="priority" value="Research">
+                <span class="pill-text">Research</span>
+              </label>
+              <label class="task-pill">
+                <input type="radio" name="priority" value="Review">
+                <span class="pill-text">Review</span>
+              </label>
+              <label class="task-pill">
+                <input type="radio" name="priority" value="Writing">
+                <span class="pill-text">Writing</span>
+              </label>
+              <label class="task-pill">
+                <input type="radio" name="priority" value="Learning">
+                <span class="pill-text">Learning</span>
+              </label>
+              <label class="task-pill">
+                <input type="radio" name="priority" value="Planning">
+                <span class="pill-text">Planning</span>
               </label>
             </div>
-            
-            <div class="priority-group">
-              <label>Importance:</label>
-              <label class="radio-label">
-                <input type="radio" name="importance" value="Important" required>
-                <span>Important</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="importance" value="Not Important" required>
-                <span>Not Important</span>
-              </label>
+          </div>
+
+          <div class="input-group">
+            <label class="field-label">DURATION</label>
+            <div class="duration-row">
+              <div class="duration-input">
+                <input type="number" name="duration_hours" min="0" placeholder="0">
+                <span>Hr</span>
+              </div>
+              <div class="duration-input">
+                <input type="number" name="duration_minutes" min="0" max="59" placeholder="0">
+                <span>Min</span>
+              </div>
             </div>
           </div>
         </div>
